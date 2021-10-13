@@ -1,14 +1,20 @@
 import React from "react";
 import { View,Text,StyleSheet } from "react-native";
 import Colors from "../constants/Colors";
-import DeleteItemCart from "./DeleteItemCart";
+import DeleteButton from "./DeleteButton";
+import { useDispatch } from "react-redux";
+import { removeFromCart } from "../store/actions/cart";
 const CartItem = (props) => {
+    const dispatch = useDispatch();
+    const dispatchDeleteCartItemHandler =()=> {
+        dispatch(removeFromCart(props.item.id))
+    }
     return(
         <View style={styles.container}>
             <Text>{props.item.quantity}</Text>
             <Text>{props.item.productTitle}</Text>
             <Text>{props.item.productPrice}</Text>
-            <DeleteItemCart id={props.item.id}/>
+            <DeleteButton delete={dispatchDeleteCartItemHandler}/>
         </View>
     );
 }

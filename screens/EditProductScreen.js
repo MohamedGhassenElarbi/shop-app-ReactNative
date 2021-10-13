@@ -1,6 +1,11 @@
 import React from "react";
 import { View,Text,StyleSheet } from "react-native";
-const EditProductScreen = () => {
+const EditProductScreen = ({navigation}) => {
+    /* React.useLayoutEffect(() => {
+        navigation.getParent().setOptions({
+            headerShown:false,
+        });
+      }, [navigation]); */
     return(
         <View>
             <Text>EditProductScreen</Text>

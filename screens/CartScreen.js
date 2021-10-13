@@ -1,10 +1,13 @@
 import React from "react";
-import { View,Text,StyleSheet, FlatList } from "react-native";
-import { useSelector } from "react-redux";
+import { View,Text,StyleSheet, FlatList,Alert } from "react-native";
+import { useSelector,useDispatch } from "react-redux";
 import PriceText from '../components/PriceText';
 import Colors from "../constants/Colors";
 import CartItem from "../components/CartItem";
+import OrderButton from "../components/OrderButton";
+import {placeOrder} from "../store/actions/orders";
 const CartScreen = () => {
+    const items = useSelector(state => state.cart.items);
     const cartItems = useSelector(state => {
         const transformedCartItems=[];
         for(const key in state.cart.items){
@@ -19,12 +22,17 @@ const CartScreen = () => {
         return transformedCartItems;
     });
     
-    const totlaAmount =useSelector(state => state.cart.totalAmount);
+    const totalAmount =useSelector(state => state.cart.totalAmount);
+    const dispatch = useDispatch();
+    const dispatchOrderHandler = () => {
+        dispatch(placeOrder(cartItems,totalAmount));
+        Alert.alert("Great !","Your Order was placed successfully",[{title:'Close'}]);
+    }
     return(
         <View>
             <View style={styles.total}>
             <Text style={styles.label}>Total Amount :</Text>
-            <PriceText text={totlaAmount} />
+            <PriceText text={totalAmount} />
             </View>
             <View style={styles.list}>
             <FlatList data={cartItems} renderItem={({item})=>{
@@ -33,6 +41,12 @@ const CartScreen = () => {
                 );
             }}/>
             </View>
+            {(totalAmount>0)?
+                <View style={styles.order}>
+                    <OrderButton order={dispatchOrderHandler}/>
+                </View>:null
+            }
+            
         </View>
     );
 }
@@ -50,5 +64,8 @@ const styles = StyleSheet.create({
     },
     list:{
         marginTop:15,
+    },
+    order:{
+        alignItems:'center',
     }
 });

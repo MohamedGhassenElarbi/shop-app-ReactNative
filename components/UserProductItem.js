@@ -1,27 +1,30 @@
 import React from "react";
-import { View,ImageBackground,Text,StyleSheet, TouchableOpacity } from "react-native";
-import Colors from "../constants/Colors";
-import AddToCartButton from "./AddToCartButton";
-import PriceText from "./PriceText";
-import DetailsButton from "./DetailsButton";
+import { View,StyleSheet } from "react-native";
 import ProductCard from "./ProductCard";
-const ProductItem = (props) => {
+import Colors from "../constants/Colors";
+import PriceText from "./PriceText";
+import DeleteButton from './DeleteButton';
+import UpdateButton from "./UpdateButton";
+import { useDispatch } from "react-redux";
+import { deleteProduct } from "../store/actions/products";
+const UserProductItem = (props) => {
+    const dispatch =useDispatch();
+    const deleteProductHandler = () => {
+        dispatch(deleteProduct(props.item.id));
+    }
     return(
-        <TouchableOpacity onPress={()=>props.navigation.navigate('ProductDetail',{item:props.item})}>
         <View style={styles.container}>
             <ProductCard title={props.item.title} imageUrl={props.item.imageUrl}/>
             <View style={styles.details}>
-                <DetailsButton navigation={props.navigation} item={props.item}/>
+                <UpdateButton />
                 <PriceText text={props.item.price}/>
-                <AddToCartButton item={props.item}/>
+                <DeleteButton delete={deleteProductHandler}/>
             </View>
-
         </View>
-        </TouchableOpacity>
     );
 }
-export default ProductItem;
-const styles =StyleSheet.create({
+export default UserProductItem;
+const styles=StyleSheet.create({
     container:{
         width:340,
         height:300,

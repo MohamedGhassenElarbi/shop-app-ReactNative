@@ -4,6 +4,7 @@ import CartScreen from '../screens/CartScreen';
 import ProductsOverviewScreen from '../screens/ProductsOverviewScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import Colors from '../constants/Colors';
+import DrawerRoutes from "./DrawerRoutes";
 const Stack =createNativeStackNavigator();
 const StackRoutes = () => {
     return(
@@ -16,7 +17,7 @@ const StackRoutes = () => {
               fontWeight: 'bold',
             },
           }}>
-            <Stack.Screen name="Products" component={ProductsOverviewScreen} />
+            <Stack.Screen name="Products Overview" component={DrawerRoutes} options={{headerShown: false}}  />
             <Stack.Screen name="ProductDetail" component={ProductDetailScreen}
                 options={({ route }) => ({ title: route.params.item.title })}
             />
