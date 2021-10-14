@@ -18,7 +18,7 @@ const UserProductsStackRoutes = () => {
             },
           }}>
             <Stack.Screen name="userProducts" component={UserProductsScreen} options={{headerShown: false}}/>
-            <Stack.Screen name="EditProduct" component={EditProductScreen} />
+            <Stack.Screen name="EditProduct" component={EditProductScreen} initialParams={{ item: false }}/>
         </Stack.Navigator>
     );
 }

@@ -16,7 +16,7 @@ const UserProductsScreen = ({navigation}) => {
         <View>
             <FlatList data={userProducts} renderItem={({item})=>{
               return(
-                <UserProductItem item={item}/>
+                <UserProductItem item={item} navigation={navigation}/>
               );
             }}/>
         </View>

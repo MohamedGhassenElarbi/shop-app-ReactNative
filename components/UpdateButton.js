@@ -2,9 +2,9 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import Colors from "../constants/Colors";
-const UpdateButton = () => {
+const UpdateButton = (props) => {
     return(
-        <TouchableOpacity>
+        <TouchableOpacity onPress={props.update}>
         <View>
             <FontAwesome5 name="tools" size={23} color={Colors.secondary}/>
         </View>

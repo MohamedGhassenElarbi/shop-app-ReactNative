@@ -12,11 +12,14 @@ const UserProductItem = (props) => {
     const deleteProductHandler = () => {
         dispatch(deleteProduct(props.item.id));
     }
+    const updateProductHandler = () => {
+        props.navigation.navigate('EditProduct',{item:props.item});
+    }
     return(
         <View style={styles.container}>
             <ProductCard title={props.item.title} imageUrl={props.item.imageUrl}/>
             <View style={styles.details}>
-                <UpdateButton />
+                <UpdateButton update={updateProductHandler}/>
                 <PriceText text={props.item.price}/>
                 <DeleteButton delete={deleteProductHandler}/>
             </View>
