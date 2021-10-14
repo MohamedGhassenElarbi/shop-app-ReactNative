@@ -1,17 +1,20 @@
-import React,{useState} from "react";
-import { View,Text,StyleSheet,TextInput,Alert, ScrollView } from "react-native";
+import React from "react";
+import { View,StyleSheet,TextInput,Alert, ScrollView,Text } from "react-native";
 import Colors from "../constants/Colors";
 import CustomButton from "../components/CustomButton";
 import { Ionicons } from '@expo/vector-icons'; 
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { useDispatch } from "react-redux";
 import {createProduct,updateProduct} from '../store/actions/products'
+import { Formik } from "formik";
+import * as yup from 'yup';
+const productSchema = yup.object({
+    title:yup.string().required(),
+    description:yup.string().required(),
+    imageUrl:yup.string().required(),
+    price:yup.string().required(),
+});
 const EditProductScreen = ({route,navigation}) => {
-    //const {item} = route.params;
-    const [title, setTitle] = useState(route.params.item?route.params.item.title:'');
-    const [imageUrl, setImageUrl] = useState(route.params.item?route.params.item.imageUrl:'');
-    const [price, setPrice] = useState(route.params.item?route.params.item.price.toString():'');
-    const [description, setDescription] = useState(route.params.item?route.params.item.description:'');
     if(!route.params.item){
         React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -20,12 +23,12 @@ const EditProductScreen = ({route,navigation}) => {
         },);
     }
     const dispatch = useDispatch()
-    const addProductHandler =()=> {
+    const addProductHandler =(title,description,imageUrl,price)=> {
         dispatch(createProduct(title,description,imageUrl,+price));
         Alert.alert("Great !","Product added successfully",[{title:'Close'}]);
         navigation.navigate('userProducts');
     }
-    const updateProductHandler =()=> {
+    const updateProductHandler =(title,description,imageUrl)=> {
         dispatch(updateProduct(route.params.item.id,title,description,imageUrl));
         Alert.alert("Great !","Product updated successfully",[{title:'Close'}]);
         navigation.navigate('userProducts');
@@ -33,35 +36,79 @@ const EditProductScreen = ({route,navigation}) => {
     return(
         <ScrollView>
         <View>
-            {/*route.params.item?<Text>update</Text>:<Text>add</Text>*/}
-            <View style={styles.inputContainer}>
+            <Formik
+                initialValues={{ 
+                    title: route.params.item?route.params.item.title:'',
+                    imageUrl:route.params.item?route.params.item.imageUrl:'',
+                    price:route.params.item?route.params.item.price.toString():'',
+                    description:route.params.item?route.params.item.description:''
+                 }}
+                validationSchema={productSchema}
+                onSubmit={values => 
+                    route.params.item?updateProductHandler(values.title,values.description,values.imageUrl):addProductHandler(values.title,values.description,values.imageUrl,values.price)
+                }
+            >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View>
+                <View style={styles.inputContainer}>
                 <Text style={styles.label}>Title</Text>
-                <TextInput value={title} onChangeText={text => setTitle(text)} style={styles.input}/>
-            </View>
-            <View style={styles.inputContainer}>
+                <TextInput
+                onChangeText={handleChange('title')}
+                onBlur={handleBlur('title')}
+                value={values.title}
+                style={styles.input}
+                />
+                <Text style={styles.error}>{touched.title&&errors.title}</Text>
+                </View>
+
+                <View style={styles.inputContainer}>
                 <Text style={styles.label}>Image Url</Text>
-                <TextInput value={imageUrl} onChangeText={text => setImageUrl(text)} style={styles.input}/>
-            </View>
-            {!route.params.item?
+                <TextInput
+                onChangeText={handleChange('imageUrl')}
+                onBlur={handleBlur('imageUrl')}
+                value={values.imageUrl}
+                style={styles.input}
+                />
+                <Text style={styles.error}>{touched.imageUrl&&errors.imageUrl}</Text>
+                </View>
+                
+                {!route.params.item?
                 (<View style={styles.inputContainer}>
                 <Text style={styles.label}>Price</Text>
-                <TextInput value={price} onChangeText={text => setPrice(text)} style={styles.input}/>
+                <TextInput
+                onChangeText={handleChange('price')}
+                onBlur={handleBlur('price')}
+                value={values.price}
+                style={styles.input}
+                keyboardType='decimal-pad'
+                />
+                <Text style={styles.error}>{touched.price&&errors.price}</Text>
                 </View>):null
-            }
-            
-            <View style={styles.inputContainer}>
+                }
+                
+                <View style={styles.inputContainer}>
                 <Text style={styles.label}>Description</Text>
-                <TextInput value={description} onChangeText={text => setDescription(text)} style={styles.input}/>
-            </View>
-            <View style={styles.button}>
-                {!route.params.item?<CustomButton title='Add Product' press={addProductHandler}>
+                <TextInput
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                style={styles.input}
+                />
+                <Text style={styles.error}>{touched.description&&errors.description}</Text>
+                </View>
+                
+                <View style={styles.button}>
+                {!route.params.item?<CustomButton title='Add Product' press={handleSubmit}>
                     <Ionicons name="add-circle-outline" size={30} color="white" />
                     </CustomButton>:
-                    <CustomButton title='Edit Product'press={updateProductHandler}>
+                    <CustomButton title='Edit Product'press={handleSubmit}>
                         <FontAwesome5 name="tools" size={20} color="white"/>
                     </CustomButton>
                 }
+                </View>
             </View>
+            )}
+            </Formik>
         </View>
         </ScrollView>
     );
@@ -79,10 +126,15 @@ const styles = StyleSheet.create({
     },
     input:{
         borderBottomWidth:1,
-        padding:10,
+        padding:8,
     },
     button:{
-        marginTop:15,
+        marginTop:8,
         alignItems:'center',
+    },
+    error:{
+        color:'red',
+        marginLeft:10,
+        marginTop:5,
     }
 });
