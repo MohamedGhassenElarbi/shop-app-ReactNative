@@ -1,9 +1,9 @@
 import PRODUCTS from '../../data/dummy-data'; 
 import Product from '../../models/Product';
-import { CREATE_PRODUCT, DELETE_PRODUCT, updateProduct, UPDATE_PRODUCT } from '../actions/products';
+import { CREATE_PRODUCT, DELETE_PRODUCT, SET_PRODUCTS, updateProduct, UPDATE_PRODUCT } from '../actions/products';
 const initialState ={
-    availableproducts:PRODUCTS,
-    userProducts:PRODUCTS.filter(prod=>prod.ownerId=== 'u1')
+    availableproducts:[],//PRODUCTS,
+    userProducts:[]//PRODUCTS.filter(prod=>prod.ownerId=== 'u1')
 };
 const productsReducer =  (state=initialState,action)=> {
     switch(action.type){
@@ -15,7 +15,7 @@ const productsReducer =  (state=initialState,action)=> {
             };
         case CREATE_PRODUCT:
             const newproduct = new Product (
-                new Date().toString(),
+                action.productData.id,
                 'u1',
                 action.productData.title,
                 action.productData.imageUrl,
@@ -46,6 +46,11 @@ const productsReducer =  (state=initialState,action)=> {
                 ...state,
                 availableproducts:updatedAvailableProducts,
                 userProducts:updatedUserproducts,
+            };
+        case SET_PRODUCTS:
+            return{
+                availableproducts:action.products,
+                userProducts:action.products.filter(prod=>prod.ownerId=== 'u1')
             };
     }
     return state;

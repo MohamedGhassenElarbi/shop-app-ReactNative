@@ -11,13 +11,13 @@ const OrderItem = (props) => {
         <View style={styles.container}>
             <View style={styles.topContainer}>
                 <View><Text style={styles.text}>{props.item.totalAmount.toFixed(2)} $</Text></View>
-                <View><Text style={styles.text}>{props.date}</Text></View>
+                <View><Text style={styles.text}>{props.item.date.slice(0, 10)}</Text></View>
             </View>
             <View>
                 <OrderDetailsButton details={toggleOpenDetailshandler}/>
             </View>
             {open && <View> 
-                {props.item.items.map((token)=>{
+                {props.item?.items?.map((token)=>{
                     console.log(token);
                     return(<View key={token.id} style={styles.details}>
                             <Text>{token.quantity}</Text>
